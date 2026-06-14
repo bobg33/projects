@@ -6,8 +6,8 @@
 
 body {
     font-family: Arial, sans-serif;
-    background: #e0f2ff;
-    color: #003366;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
     padding: 20px;
 }
@@ -36,7 +36,7 @@ header p {
 }
 
 .project-card {
-    background: white;
+    background: var(--card);
     border-radius: 12px;
     padding: 20px;
     text-decoration: none;
@@ -47,7 +47,7 @@ header p {
     display: flex;
     flex-direction: column;
 
-    border: 2px solid #b3daff;
+    border: 2px solid var(--border);
 
     transition:
         transform 0.15s ease,
@@ -58,19 +58,19 @@ header p {
 .project-card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    border-color: #4da6ff;
+    border-color: var(--hover);
 }
 
 .project-card h2 {
     font-size: 1.2rem;
     margin-bottom: 12px;
-    color: #00509e;
+    color: var(--title);
 }
 
 .project-card p {
     font-size: 0.95rem;
     line-height: 1.4;
-    color: #555;
+    color: var(--desc);
 }
 
 @media (max-width: 600px) {
@@ -80,5 +80,27 @@ header p {
 
     header h1 {
         font-size: 2rem;
+    }
+}
+
+:root {
+    --bg: #e0f2ff;
+    --text: #003366;
+    --card: white;
+    --border: #b3daff;
+    --title: #00509e;
+    --desc: #555;
+    --hover: #4da6ff;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #121212;
+        --text: #e0e0e0;
+        --card: #1e1e1e;
+        --border: #333;
+        --title: #6cb6ff;
+        --desc: #b0b0b0;
+        --hover: #6cb6ff;
     }
 }
