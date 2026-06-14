@@ -4,79 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>bobg33's Projects</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f2ff;
-            color: #003366;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .link-list {
-            background-color: #b3daff;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px; /* 20px space on all sides */
-            width: calc(100vw - 40px); /* Full width minus 20px on each side */
-            height: calc(100vh - 40px); /* Full height minus 20px on top and bottom */
-            box-sizing: border-box; /* Ensures padding is included in the height calculation */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow-y: auto;
-        }
-        .link-list a {
-            display: block;
-            margin: 10px 0;
-            color: #00509e;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 2vw; /* Responsive font size for links */
-        }
-        .link-list a:hover {
-            color: #003366;
-        }
-
-        /* Additional responsive font sizing for smaller screens */
-        @media (max-width: 600px) {
-            .link-list a {
-                font-size: 4vw; /* Larger link font size on smaller screens */
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="link-list">
-    <a href="Show Copied HTML.html">Show Copied HTML</a>
-    <a href="File to Image Converter v1.2.html">File to Image Converter</a>
-    <a href="Binary Waterfall.html">Binary Waterfall</a>
-    <a href="PCM Player.html">PCM Player</a>
-    <a href="Curseforge mod updater 1.0.html">CurseForge Mod List Downloader</a>
-    <a href="Secret Data in Images.html">Secret Data in Images</a>
-    <a href="Randglitch.html">Randglitch (Image Glitcher)</a>
-    <a href="Gibbercode Encode and Decode.html">Gibbercode Encode and Decode</a>
-    <a href="Multi-Window Movement V2.1.html">Multi-Window Movement</a>
-    <a href="Bouncing Letters Screensaver.html">AI-Generated Code (Bouncing Letters)</a>
-    <a href="data sender.html">Data Sender</a>
-    <a href="detection system.html">Detection System</a>
-    <a href="detection system cam.html">Detection System Camera</a>
-    <a href="creature with portal two.html">creatures with portals</a>
-    <a href="multi-window creatures.html">Multi-Window CREATURES</a>
-    <a href="File Sender 2.html">File Sender</a>
-    <a href="sua player.html">.sua player</a>
-</div>
+    <header>
+        <h1>bobg33's Projects</h1>
+        <p>Experiments, tools, games, and random creations.</p>
+    </header>
+
+    <main class="project-grid">
+
+        <a class="project-card" href="Show Copied HTML.html">
+            <h2>Show Copied HTML</h2>
+            <p>Displays HTML content currently stored in the clipboard.</p>
+        </a>
+
+        <a class="project-card" href="File to Image Converter v1.2.html">
+            <h2>File to Image Converter</h2>
+            <p>Stores files inside images and extracts them later.</p>
+        </a>
+
+        <a class="project-card" href="Binary Waterfall.html">
+            <h2>Binary Waterfall</h2>
+            <p>Animated binary rain effect.</p>
+        </a>
+
+        <a class="project-card" href="PCM Player.html">
+            <h2>PCM Player</h2>
+            <p>Plays raw PCM audio data directly in the browser.</p>
+        </a>
+
+        <a class="project-card" href="Curseforge mod updater 1.0.html">
+            <h2>CurseForge Mod List Downloader</h2>
+            <p>Downloads and updates mod lists from CurseForge.</p>
+        </a>
+
+        <a class="project-card" href="Secret Data in Images.html">
+            <h2>Secret Data in Images</h2>
+            <p>Hide and recover files inside image pixels.</p>
+        </a>
+
+        <a class="project-card" href="Randglitch.html">
+            <h2>Randglitch</h2>
+            <p>Randomly corrupts image data to create glitch art.</p>
+        </a>
+
+        <a class="project-card" href="Gibbercode Encode and Decode.html">
+            <h2>Gibbercode</h2>
+            <p>Encode and decode text using the Gibbercode format.</p>
+        </a>
+
+        <a class="project-card" href="Multi-Window Movement V2.1.html">
+            <h2>Multi-Window Movement</h2>
+            <p>Synchronizes objects between browser windows.</p>
+        </a>
+
+        <a class="project-card" href="Bouncing Letters Screensaver.html">
+            <h2>Bouncing Letters</h2>
+            <p>AI-generated screensaver with bouncing text.</p>
+        </a>
+
+        <a class="project-card" href="data sender.html">
+            <h2>Data Sender</h2>
+            <p>Transfers data between browser instances.</p>
+        </a>
+
+        <a class="project-card" href="detection system.html">
+            <h2>Detection System</h2>
+            <p>Monitors and detects movement or activity.</p>
+        </a>
+
+        <a class="project-card" href="detection system cam.html">
+            <h2>Detection System Camera</h2>
+            <p>Camera-based detection and monitoring tool.</p>
+        </a>
+
+        <a class="project-card" href="creature with portal two.html">
+            <h2>Creatures With Portals</h2>
+            <p>Creatures interacting through linked portals.</p>
+        </a>
+
+        <a class="project-card" href="multi-window creatures.html">
+            <h2>Multi-Window Creatures</h2>
+            <p>Creatures that move across multiple windows.</p>
+        </a>
+
+        <a class="project-card" href="File Sender 2.html">
+            <h2>File Sender</h2>
+            <p>Send files directly between devices.</p>
+        </a>
+
+        <a class="project-card" href="sua player.html">
+            <h2>.sua Player</h2>
+            <p>Playback tool for SUA audio files.</p>
+        </a>
+
+    </main>
 
 </body>
 </html>
-
-
-
-
-
-
