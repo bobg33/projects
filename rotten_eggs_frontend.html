@@ -362,6 +362,16 @@
             placeholder="What did they do?"
         ></textarea>
 
+        <label for="reportServer">Server</label>
+
+        <input
+            id="reportServer"
+            type="text"
+            maxlength="100"
+            placeholder="Ex.. Bosch 1, Bosch 2, Petits Pieds NA, NERF EU"
+            autocomplete="off"
+        >
+
         <button id="submitButton">Submit Report</button>
 
         <div id="submitStatus" class="status"></div>
@@ -433,6 +443,7 @@
 
     const reportName = document.getElementById("reportName");
     const reason = document.getElementById("reason");
+    const reportServer = document.getElementById("reportServer");
     const submitButton = document.getElementById("submitButton");
     const submitStatus = document.getElementById("submitStatus");
 
@@ -595,8 +606,9 @@
                     id: id,
                     name: report[0],
                     reason: report[1],
-                    timestamp: report[2],
-                    approved: report[3]
+                    server: report[2],
+                    timestamp: report[3],
+                    approved: report[4]
                 };
 
                 break;
@@ -615,6 +627,7 @@
 
             resultDetails.innerHTML = `
                 <strong>Reason:</strong> ${escapeHtml(foundReport.reason)}<br>
+                <strong>Server:</strong> ${escapeHtml(foundReport.server)}<br>
                 <strong>Reported:</strong> ${date.toLocaleString()}<br>
                 <strong>Status:</strong> ${approvalText}
             `;
@@ -635,12 +648,13 @@
     async function submitReport() {
         const name = reportName.value.trim();
         const reportReason = reason.value.trim();
+        const server = reportServer.value.trim();
 
         submitStatus.className = "status";
 
-        if (!name || !reportReason) {
+        if (!name || !reportReason || !server) {
             submitStatus.textContent =
-                "Please enter both a name and a reason.";
+                "Please enter a name, reason, and server.";
             submitStatus.className = "status error";
             return;
         }
@@ -658,7 +672,8 @@
 
                 body: JSON.stringify({
                     name: name,
-                    reason: reportReason
+                    reason: reportReason,
+                    server: server
                 })
             });
 
@@ -675,6 +690,7 @@
 
             reportName.value = "";
             reason.value = "";
+            reportServer.value = "";
 
             // Refresh the local list so the new report appears immediately.
             await loadReports();
@@ -699,7 +715,7 @@
         reportList.innerHTML = "";
 
         const entries = Object.entries(reports)
-            .sort((a, b) => b[1][2] - a[1][2]);
+            .sort((a, b) => Number(b[1][3]) - Number(a[1][3]));
 
         if (entries.length === 0) {
             reportList.textContent = "No reports.";
@@ -712,8 +728,9 @@
         for (const [id, report] of entries) {
             const name = report[0];
             const reportReason = report[1];
-            const timestamp = report[2];
-            const approved = report[3];
+            const server = report[2];
+            const timestamp = report[3];
+            const approved = report[4];
 
             const reportElement = document.createElement("div");
             reportElement.className = "report";
@@ -726,7 +743,11 @@
                 </div>
 
                 <div class="report-reason">
-                    ${escapeHtml(reportReason)}
+                    <strong>Reason:</strong> ${escapeHtml(reportReason)}
+                </div>
+
+                <div class="report-reason">
+                    <strong>Server:</strong> ${escapeHtml(server)}
                 </div>
 
                 <div class="report-date">
@@ -853,9 +874,18 @@
             return;
         }
 
+        const newServer = prompt(
+            "Enter the server:",
+            report[2]
+        );
+
+        if (newServer === null) {
+            return;
+        }
+
         const newTimestamp = prompt(
             "Enter the Unix timestamp:",
-            report[2]
+            report[3]
         );
 
         if (newTimestamp === null) {
@@ -866,6 +896,7 @@
             await adminRequest("/admin/modify", {
                 id: Number(id),
                 reason: newReason,
+                server: newServer,
                 timestamp: Number(newTimestamp)
             });
 
