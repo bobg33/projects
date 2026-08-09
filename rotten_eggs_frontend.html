@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rotten Eggs</title>
+
+    <script>
+        (() => {
+            const theme = localStorage.getItem("rottenEggsTheme") || "system";
+
+            const dark =
+                theme === "dark" ||
+                (
+                    theme === "system" &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches
+                );
+
+            document.documentElement.dataset.theme =
+                dark ? "dark" : "light";
+        })();
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            color: #222;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input,
+        textarea,
+        button {
+            font: inherit;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 14px;
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            background: #333;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: #222;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #result {
+            text-align: center;
+            font-size: 42px;
+            font-weight: bold;
+            margin: 25px 0 10px;
+        }
+
+        .safe {
+            color: #168a36;
+        }
+
+        .rotten {
+            color: #d11a2a;
+        }
+
+        .result-details {
+            text-align: center;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .error {
+            color: #d11a2a;
+        }
+
+        .success {
+            color: #168a36;
+        }
+
+        .status {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+
+        .report-list {
+            margin-top: 20px;
+        }
+
+        .report {
+            border-top: 1px solid #ddd;
+            padding: 15px 0;
+        }
+
+        .report:first-child {
+            border-top: none;
+        }
+
+        .report-name {
+            font-weight: bold;
+        }
+
+        .report-reason {
+            margin-top: 5px;
+            color: #555;
+        }
+
+        .report-date {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #888;
+        }
+
+        .approved {
+            color: #168a36;
+            font-weight: bold;
+        }
+
+        .not-approved {
+            color: #d77a00;
+            font-weight: bold;
+        }
+
+        .small-button {
+            width: auto;
+            padding: 8px 12px;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
+            color: #222;
+        }
+
+        .title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .title-row h1 {
+            margin: 0;
+        }
+
+        .theme-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .theme-buttons button {
+            width: auto;
+            padding: 6px 9px;
+            font-size: 15px;
+            background: white;
+            color: #222;
+            border: 1px solid #ccc;
+        }
+
+        .theme-buttons button:hover {
+            background: #eee;
+        }
+
+
+        /* Theme buttons */
+
+        .theme-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .theme-buttons button {
+            width: auto;
+            padding: 6px 9px;
+            font-size: 15px;
+            background: white;
+            color: #222;
+            border: 1px solid #ccc;
+        }
+
+        .theme-buttons button:hover {
+            background: #eee;
+        }
+
+
+        /* Dark theme */
+
+        html[data-theme="dark"] body {
+            background: #181818;
+            color: #eee;
+        }
+
+        html[data-theme="dark"] .card {
+            background: #242424;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        html[data-theme="dark"] input,
+        html[data-theme="dark"] textarea,
+        html[data-theme="dark"] select {
+            background: #303030;
+            color: #eee;
+            border-color: #555;
+        }
+
+        html[data-theme="dark"] input::placeholder,
+        html[data-theme="dark"] textarea::placeholder {
+            color: #aaa;
+        }
+
+        html[data-theme="dark"] .result-details,
+        html[data-theme="dark"] .report-reason {
+            color: #bbb;
+        }
+
+        html[data-theme="dark"] .report {
+            border-top-color: #444;
+        }
+
+        html[data-theme="dark"] .report-date {
+            color: #999;
+        }
+
+        html[data-theme="dark"] .status {
+            color: #aaa;
+        }
+
+        html[data-theme="dark"] .theme-buttons button {
+            background: #303030;
+            color: #eee;
+            border-color: #555;
+        }
+
+        html[data-theme="dark"] .theme-buttons button:hover {
+            background: #404040;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="title-row">
+        <h1>Rotten Eggs</h1>
+
+        <div class="theme-buttons">
+            <button id="themeSystem" title="System theme">🖥️</button>
+            <button id="themeLight" title="Light mode">☀️</button>
+            <button id="themeDark" title="Dark mode">🌒</button>
+        </div>
+    </div>
+
+    <!-- Name checker -->
+    <div class="card">
+        <label for="nameInput">Enter a name (not case-sensitive)</label>
+
+        <input
+            id="nameInput"
+            type="text"
+            maxlength="100"
+            placeholder="Name..."
+            autocomplete="off"
+        >
+
+        <button id="checkButton">Check Name</button>
+
+        <div id="result"></div>
+        <div id="resultDetails" class="result-details"></div>
+    </div>
+
+    <!-- Submit report -->
+    <div class="card">
+        <h2>Submit a Report</h2>
+
+        <label for="reportName">Name</label>
+
+        <input
+            id="reportName"
+            type="text"
+            maxlength="100"
+            placeholder="Their exact in-game name..."
+            autocomplete="off"
+        >
+
+        <label for="reason">Reason</label>
+
+        <textarea
+            id="reason"
+            maxlength="1000"
+            placeholder="What did they do?"
+        ></textarea>
+
+        <button id="submitButton">Submit Report</button>
+
+        <div id="submitStatus" class="status"></div>
+    </div>
+
+    <!-- Database status -->
+    <div class="card">
+        <button id="toggleReportsButton">
+            Show Reports
+        </button>
+
+        <div id="reportsPanel" style="display: none; margin-top: 20px;">
+
+            <h2>Reports</h2>
+
+            <div style="margin-bottom: 15px;">
+                <label for="adminPassword">Admin Password (gives access to moderating reports)</label>
+
+                <input
+                    id="adminPassword"
+                    type="password"
+                    placeholder="Password..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div id="databaseStatus" class="status">
+                Reports are hidden.
+            </div>
+
+            <button id="refreshButton" class="small-button">
+                Refresh Reports
+            </button>
+
+            <div id="reportList" class="report-list"></div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // ============================================================
+    // CONFIGURATION
+    // ============================================================
+
+    const API_URL = "https://rotten-eggs-api.bobg33.workers.dev";
+
+
+    // ============================================================
+    // STATE
+    // ============================================================
+
+    let reports = {};
+
+
+    // ============================================================
+    // ELEMENTS
+    // ============================================================
+
+    const nameInput = document.getElementById("nameInput");
+    const checkButton = document.getElementById("checkButton");
+    const result = document.getElementById("result");
+    const resultDetails = document.getElementById("resultDetails");
+
+    const reportName = document.getElementById("reportName");
+    const reason = document.getElementById("reason");
+    const submitButton = document.getElementById("submitButton");
+    const submitStatus = document.getElementById("submitStatus");
+
+    const databaseStatus = document.getElementById("databaseStatus");
+    const toggleReportsButton =
+    document.getElementById("toggleReportsButton");
+
+    const reportsPanel =
+        document.getElementById("reportsPanel");
+
+    const refreshButton =
+        document.getElementById("refreshButton");
+
+    const reportList =
+        document.getElementById("reportList");
+
+    const adminPassword =
+        document.getElementById("adminPassword");
+
+
+    // ============================================================
+    // DARK/LIGHT MODE
+    // ============================================================
+
+    const themeSystem = document.getElementById("themeSystem");
+    const themeLight = document.getElementById("themeLight");
+    const themeDark = document.getElementById("themeDark");
+
+
+    function applyTheme(theme) {
+        let actualTheme = theme;
+
+        if (theme === "system") {
+            actualTheme =
+                window.matchMedia("(prefers-color-scheme: dark)").matches
+                    ? "dark"
+                    : "light";
+        }
+
+        document.documentElement.dataset.theme = actualTheme;
+
+        const buttons = [
+            themeSystem,
+            themeLight,
+            themeDark
+        ];
+
+        buttons.forEach(button => {
+            button.style.background = "";
+            button.style.color = "";
+            button.style.borderColor = "";
+        });
+
+        let selectedButton;
+
+        if (theme === "system") {
+            selectedButton = themeSystem;
+        } else if (theme === "light") {
+            selectedButton = themeLight;
+        } else {
+            selectedButton = themeDark;
+        }
+
+        const dark =
+            actualTheme === "dark";
+
+        selectedButton.style.background =
+            dark ? "#808080" : "#808080";
+
+        selectedButton.style.color =
+            dark ? "#222" : "white";
+
+        selectedButton.style.borderColor =
+            dark ? "#fff" : "#000";
+    }
+
+
+    function setTheme(theme) {
+        localStorage.setItem("rottenEggsTheme", theme);
+        applyTheme(theme);
+    }
+
+
+    themeSystem.addEventListener("click", () => {
+        setTheme("system");
+    });
+
+    themeLight.addEventListener("click", () => {
+        setTheme("light");
+    });
+
+    themeDark.addEventListener("click", () => {
+        setTheme("dark");
+    });
+
+
+    // ============================================================
+    // NAME NORMALIZATION
+    // ============================================================
+
+    function normalizeName(name) {
+        return name.trim().toLowerCase();
+    }
+
+
+    // ============================================================
+    // LOAD REPORTS
+    // ============================================================
+
+    async function loadReports() {
+        databaseStatus.textContent = "Loading reports...";
+
+        try {
+            const response = await fetch(API_URL + "/reports");
+
+            if (!response.ok) {
+                throw new Error("Server returned " + response.status);
+            }
+
+            reports = await response.json();
+
+            databaseStatus.textContent =
+                "Loaded " + Object.keys(reports).length + " report(s).";
+
+            displayReportList();
+
+        } catch (error) {
+            console.error(error);
+
+            databaseStatus.textContent =
+                "Could not load reports.";
+
+            databaseStatus.className = "status error";
+        }
+    }
+
+
+    // ============================================================
+    // CHECK NAME
+    // ============================================================
+
+    function checkName() {
+        const name = nameInput.value.trim();
+
+        if (!name) {
+            result.textContent = "";
+            resultDetails.textContent = "";
+            return;
+        }
+
+        const normalizedName = normalizeName(name);
+
+        let foundReport = null;
+
+        for (const [id, report] of Object.entries(reports)) {
+            const reportName = report[0];
+
+            if (normalizeName(reportName) === normalizedName) {
+                foundReport = {
+                    id: id,
+                    name: report[0],
+                    reason: report[1],
+                    timestamp: report[2],
+                    approved: report[3]
+                };
+
+                break;
+            }
+        }
+
+        if (foundReport) {
+            result.textContent = foundReport.approved ? "ROTTEN" : "ROTTEN*";
+            result.className = "rotten";
+
+            const date = new Date(foundReport.timestamp * 1000);
+
+            const approvalText = foundReport.approved
+                ? '<span class="approved">Approved</span>'
+                : '<span class="not-approved">Not approved</span>';
+
+            resultDetails.innerHTML = `
+                <strong>Reason:</strong> ${escapeHtml(foundReport.reason)}<br>
+                <strong>Reported:</strong> ${date.toLocaleString()}<br>
+                <strong>Status:</strong> ${approvalText}
+            `;
+        } else {
+            result.textContent = "Safe";
+            result.className = "safe";
+
+            resultDetails.textContent =
+                "No report was found for this name.";
+        }
+    }
+
+
+    // ============================================================
+    // SUBMIT REPORT
+    // ============================================================
+
+    async function submitReport() {
+        const name = reportName.value.trim();
+        const reportReason = reason.value.trim();
+
+        submitStatus.className = "status";
+
+        if (!name || !reportReason) {
+            submitStatus.textContent =
+                "Please enter both a name and a reason.";
+            submitStatus.className = "status error";
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitStatus.textContent = "Submitting...";
+
+        try {
+            const response = await fetch(API_URL + "/submit", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify({
+                    name: name,
+                    reason: reportReason
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || "Submission failed.");
+            }
+
+            submitStatus.textContent =
+                "Report submitted successfully.";
+
+            submitStatus.className = "status success";
+
+            reportName.value = "";
+            reason.value = "";
+
+            // Refresh the local list so the new report appears immediately.
+            await loadReports();
+
+        } catch (error) {
+            console.error(error);
+
+            submitStatus.textContent = error.message;
+            submitStatus.className = "status error";
+
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+
+    // ============================================================
+    // DISPLAY REPORT LIST
+    // ============================================================
+
+    function displayReportList() {
+        reportList.innerHTML = "";
+
+        const entries = Object.entries(reports)
+            .sort((a, b) => b[1][2] - a[1][2]);
+
+        if (entries.length === 0) {
+            reportList.textContent = "No reports.";
+            return;
+        }
+
+        const adminPassword =
+            document.getElementById("adminPassword").value;
+
+        for (const [id, report] of entries) {
+            const name = report[0];
+            const reportReason = report[1];
+            const timestamp = report[2];
+            const approved = report[3];
+
+            const reportElement = document.createElement("div");
+            reportElement.className = "report";
+
+            const date = new Date(timestamp * 1000);
+
+            reportElement.innerHTML = `
+                <div class="report-name">
+                    ${escapeHtml(name)}
+                </div>
+
+                <div class="report-reason">
+                    ${escapeHtml(reportReason)}
+                </div>
+
+                <div class="report-date">
+                    Reported: ${date.toLocaleString()}<br>
+                    Status:
+                    ${
+                        approved
+                            ? '<span class="approved">Approved</span>'
+                            : '<span class="not-approved">Not approved</span>'
+                    }
+                    <br>
+                    Report ID: ${escapeHtml(id)}
+                </div>
+            `;
+
+            // Only show administrative controls when a password
+            // has actually been entered.
+            if (adminPassword) {
+                const controls = document.createElement("div");
+                controls.className = "admin-controls";
+
+                controls.innerHTML = `
+                    <button class="small-button approval-button">
+                        ${approved ? "Unapprove" : "Approve"}
+                    </button>
+
+                    <button class="small-button edit-button">
+                        Edit
+                    </button>
+
+                    <button class="small-button delete-button">
+                        Delete
+                    </button>
+                `;
+
+                reportElement.appendChild(controls);
+
+                controls
+                    .querySelector(".approval-button")
+                    .addEventListener("click", () => {
+                        adminApproval(id, approved);
+                    });
+
+                controls
+                    .querySelector(".edit-button")
+                    .addEventListener("click", () => {
+                        adminEdit(id);
+                    });
+
+                controls
+                    .querySelector(".delete-button")
+                    .addEventListener("click", () => {
+                        adminDelete(id);
+                    });
+            }
+
+            reportList.appendChild(reportElement);
+        }
+    }
+
+
+    async function adminRequest(endpoint, body) {
+        const password =
+            document.getElementById("adminPassword").value;
+
+        if (!password) {
+            alert("Enter the admin password first.");
+            return null;
+        }
+
+        const response = await fetch(API_URL + endpoint, {
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + password
+            },
+
+            body: JSON.stringify(body)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Admin request failed.");
+        }
+
+        return data;
+    }
+
+
+    async function adminApproval(id, currentlyApproved) {
+        try {
+            const endpoint = currentlyApproved
+                ? "/admin/unapprove"
+                : "/admin/approve";
+
+            await adminRequest(endpoint, {
+                id: Number(id)
+            });
+
+            await loadReports();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+
+    async function adminEdit(id) {
+        const report = reports[id];
+
+        if (!report) {
+            alert("Report not found.");
+            return;
+        }
+
+        const newReason = prompt(
+            "Enter the new reason:",
+            report[1]
+        );
+
+        if (newReason === null) {
+            return;
+        }
+
+        const newTimestamp = prompt(
+            "Enter the Unix timestamp:",
+            report[2]
+        );
+
+        if (newTimestamp === null) {
+            return;
+        }
+
+        try {
+            await adminRequest("/admin/modify", {
+                id: Number(id),
+                reason: newReason,
+                timestamp: Number(newTimestamp)
+            });
+
+            await loadReports();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+
+    async function adminDelete(id) {
+        const report = reports[id];
+
+        if (!report) {
+            alert("Report not found.");
+            return;
+        }
+
+        const confirmed = confirm(
+            `Delete the report for "${report[0]}"?`
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            await adminRequest("/admin/delete", {
+                id: Number(id)
+            });
+
+            await loadReports();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+
+    // ============================================================
+    // HTML ESCAPING
+    // ============================================================
+
+    function escapeHtml(value) {
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+    }
+
+
+    // ============================================================
+    // EVENT HANDLERS
+    // ============================================================
+
+    checkButton.addEventListener("click", checkName);
+
+    nameInput.addEventListener("keydown", event => {
+        if (event.key === "Enter") {
+            checkName();
+        }
+    });
+
+    submitButton.addEventListener("click", submitReport);
+
+    refreshButton.addEventListener("click", loadReports);
+
+    toggleReportsButton.addEventListener("click", () => {
+        const isHidden = reportsPanel.style.display === "none";
+
+        reportsPanel.style.display = isHidden
+            ? "block"
+            : "none";
+
+        toggleReportsButton.textContent = isHidden
+            ? "Hide Reports"
+            : "Show Reports";
+    });
+
+    adminPassword.addEventListener("input", () => {
+        displayReportList();
+    });
+
+
+    // ============================================================
+    // INITIAL LOAD
+    // ============================================================
+
+    const savedTheme =
+        localStorage.getItem("rottenEggsTheme") || "system";
+
+    applyTheme(savedTheme);
+
+
+    console.log("Reached report initialization");
+    window.addEventListener("load", () => {
+        loadReports();
+    });
+
+    setInterval(() => {
+        loadReports();
+    }, 2 * 60 * 1000);
+</script>
+
+</body>
+</html>
