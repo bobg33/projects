@@ -545,7 +545,10 @@
     // ============================================================
 
     function normalizeName(name) {
-        return name.trim().toLowerCase();
+        return name
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase();
     }
 
 
@@ -626,6 +629,7 @@
                 : '<span class="not-approved">Not approved</span>';
 
             resultDetails.innerHTML = `
+                <strong>Name:</strong> ${escapeHtml(foundReport.name)}<br>
                 <strong>Reason:</strong> ${escapeHtml(foundReport.reason)}<br>
                 <strong>Server:</strong> ${escapeHtml(foundReport.server)}<br>
                 <strong>Reported:</strong> ${date.toLocaleString()}<br>
