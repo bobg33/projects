@@ -399,7 +399,7 @@
             </div>
 
             <div id="databaseStatus" class="status">
-                Reports are hidden.
+                Reports have not been loaded.
             </div>
 
             <button id="refreshButton" class="small-button">
@@ -577,10 +577,14 @@
 
             reports = data.reports;
 
+            databaseStatus.textContent = "Loaded " + Object.keys(reports).length + " report(s).";
+
             displayReportList();
 
         } catch (error) {
             console.error("Failed to load reports:", error);
+
+            databaseStatus.textContent = "Failed to load reports: " + error;
         }
     }
 
