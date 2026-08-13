@@ -430,6 +430,7 @@
     // ============================================================
 
     let reports = {};
+    let reportUpdate = -1;
 
 
     // ============================================================
@@ -557,29 +558,29 @@
     // ============================================================
 
     async function loadReports() {
-        databaseStatus.textContent = "Loading reports...";
-
         try {
-            const response = await fetch(API_URL + "/reports");
+            const response = await fetch(
+                `${API_URL}/reports?update=${encodeURIComponent(reportUpdate)}`
+            );
 
             if (!response.ok) {
-                throw new Error("Server returned " + response.status);
+                throw new Error("Failed to load reports.");
             }
 
-            reports = await response.json();
+            const data = await response.json();
 
-            databaseStatus.textContent =
-                "Loaded " + Object.keys(reports).length + " report(s).";
+            reportUpdate = data.update;
+
+            if (!data.updated) {
+                return;
+            }
+
+            reports = data.reports;
 
             displayReportList();
 
         } catch (error) {
-            console.error(error);
-
-            databaseStatus.textContent =
-                "Could not load reports.";
-
-            databaseStatus.className = "status error";
+            console.error("Failed to load reports:", error);
         }
     }
 
