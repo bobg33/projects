@@ -20,10 +20,19 @@ header {
 header h1 {
     font-size: 3rem;
     margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
 }
 
 header p {
     opacity: 0.8;
+}
+
+header img {
+    height: 1.2em;
+    width: auto;
 }
 
 .project-grid {
